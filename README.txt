@@ -1,6 +1,8 @@
 Wireless ECR Simulator 1.0 - by Ahmad El Lahib
 =================================================
 
+Author: Ahmad El Lahib - freelance Android, Windows and web developer in Lebanon - https://ahmadellahib.dev
+
 A Windows app for testing the areeba wireless ECR integration server. It plays both sides:
 
   * MERCHANT (cash register / vending backend), the same calls as the Postman collection:
