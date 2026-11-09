@@ -1,0 +1,6 @@
+# local only: secrets, settings (DPAPI-encrypted per Windows user), logs, builds
+defaults.local.json
+wireless-ecr-simulator.settings.json
+logs/
+*.exe
+*.zip

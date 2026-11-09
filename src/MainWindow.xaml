@@ -1,0 +1,958 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Wireless ECR Simulator" Width="1460" Height="940" MinWidth="1180" MinHeight="720"
+        WindowStartupLocation="CenterScreen" Background="#EEF1F7"
+        FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="13" Foreground="#0F172A"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+  <Window.Resources>
+    <SolidColorBrush x:Key="Ink" Color="#0F172A"/>
+    <SolidColorBrush x:Key="Muted" Color="#64748B"/>
+    <SolidColorBrush x:Key="Line" Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="Field" Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="Primary" Color="#4F46E5"/>
+    <SolidColorBrush x:Key="PrimaryDark" Color="#4338CA"/>
+    <SolidColorBrush x:Key="Success" Color="#059669"/>
+    <SolidColorBrush x:Key="Danger" Color="#DC2626"/>
+    <FontFamily x:Key="Mono">Cascadia Mono, Consolas</FontFamily>
+
+    <Style x:Key="Card" TargetType="Border">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="CornerRadius" Value="14"/>
+      <Setter Property="BorderBrush" Value="#E3E8F0"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="18,16"/>
+      <Setter Property="Margin" Value="0,0,0,14"/>
+      <Setter Property="Effect">
+        <Setter.Value>
+          <DropShadowEffect BlurRadius="18" ShadowDepth="2" Direction="270" Opacity="0.07" Color="#1E293B"/>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="CardTitle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="15"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+    </Style>
+    <Style x:Key="CardSub" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="Margin" Value="0,2,0,12"/>
+    </Style>
+    <Style x:Key="Label" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11.5"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="#475569"/>
+      <Setter Property="Margin" Value="0,10,0,5"/>
+    </Style>
+    <Style x:Key="Hint" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11.5"/>
+      <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+    <Style x:Key="Section" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#94A3B8"/>
+      <Setter Property="Margin" Value="0,16,0,2"/>
+    </Style>
+
+    <Style TargetType="TextBox">
+      <Setter Property="Background" Value="{StaticResource Field}"/>
+      <Setter Property="BorderBrush" Value="#D8DEE8"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="8,6"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TextBox">
+            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+              <ScrollViewer x:Name="PART_ContentHost" Margin="0" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#A5B4FC"/>
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#4F46E5"/>
+                <Setter TargetName="Bd" Property="Background" Value="White"/>
+              </Trigger>
+              <Trigger Property="IsReadOnly" Value="True">
+                <Setter TargetName="Bd" Property="Background" Value="#F1F5F9"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Bd" Property="Opacity" Value="0.55"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="PasswordBox">
+      <Setter Property="Background" Value="{StaticResource Field}"/>
+      <Setter Property="BorderBrush" Value="#D8DEE8"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="8,6"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="PasswordBox">
+            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+              <ScrollViewer x:Name="PART_ContentHost" Margin="0" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#A5B4FC"/>
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#4F46E5"/>
+                <Setter TargetName="Bd" Property="Background" Value="White"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="ComboToggle" TargetType="ToggleButton">
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ToggleButton">
+            <Border x:Name="Bd" Background="Transparent" BorderBrush="#D8DEE8" BorderThickness="1" CornerRadius="8">
+              <Path x:Name="Chev" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,11,0"
+                    Data="M0,0 L5,5 L10,0" Stroke="#64748B" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#A5B4FC"/>
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#4F46E5"/>
+                <Setter TargetName="Chev" Property="Stroke" Value="#4F46E5"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Padding" Value="10,7"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ComboBoxItem">
+            <Border x:Name="Bd" Background="Transparent" CornerRadius="6" Padding="{TemplateBinding Padding}" Margin="2,1">
+              <ContentPresenter/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsHighlighted" Value="True">
+                <Setter TargetName="Bd" Property="Background" Value="#EEF2FF"/>
+              </Trigger>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Bd" Property="Background" Value="#E0E7FF"/>
+                <Setter Property="Foreground" Value="#3730A3"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="ComboBox">
+      <Setter Property="Height" Value="34"/>
+      <Setter Property="Padding" Value="10,0,30,0"/>
+      <Setter Property="Foreground" Value="#0F172A"/>
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ComboBox">
+            <Grid>
+              <Border Background="{TemplateBinding Background}" CornerRadius="8"/>
+              <ToggleButton x:Name="Toggle" Style="{StaticResource ComboToggle}"
+                            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+              <ContentPresenter x:Name="Content" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"
+                                Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
+              <TextBox x:Name="PART_EditableTextBox" Visibility="Collapsed" Margin="1,1,26,1" Background="Transparent" BorderThickness="0"
+                       Padding="9,0" VerticalContentAlignment="Center" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}"
+                       FontFamily="{TemplateBinding FontFamily}" IsReadOnly="{TemplateBinding IsReadOnly}">
+                <TextBox.Template>
+                  <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                  </ControlTemplate>
+                </TextBox.Template>
+              </TextBox>
+              <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade"
+                     IsOpen="{TemplateBinding IsDropDownOpen}">
+                <Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Margin="0,4,8,8" Padding="2,4"
+                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="280">
+                  <Border.Effect>
+                    <DropShadowEffect BlurRadius="14" ShadowDepth="3" Direction="270" Opacity="0.15"/>
+                  </Border.Effect>
+                  <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsPresenter/>
+                  </ScrollViewer>
+                </Border>
+              </Popup>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsEditable" Value="True">
+                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="Content" Property="Visibility" Value="Hidden"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.55"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="ScrollBar">
+      <Setter Property="Width" Value="10"/>
+      <Setter Property="MinWidth" Value="10"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ScrollBar">
+            <Track x:Name="PART_Track" IsDirectionReversed="True">
+              <Track.Thumb>
+                <Thumb>
+                  <Thumb.Template>
+                    <ControlTemplate TargetType="Thumb">
+                      <Border x:Name="T" Background="#CBD5E1" CornerRadius="4" Margin="2"/>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                          <Setter TargetName="T" Property="Background" Value="#94A3B8"/>
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </Thumb.Template>
+                </Thumb>
+              </Track.Thumb>
+            </Track>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="Orientation" Value="Horizontal">
+          <Setter Property="Width" Value="Auto"/>
+          <Setter Property="MinWidth" Value="0"/>
+          <Setter Property="Height" Value="10"/>
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="ScrollBar">
+                <Track x:Name="PART_Track">
+                  <Track.Thumb>
+                    <Thumb>
+                      <Thumb.Template>
+                        <ControlTemplate TargetType="Thumb">
+                          <Border Background="#CBD5E1" CornerRadius="4" Margin="2"/>
+                        </ControlTemplate>
+                      </Thumb.Template>
+                    </Thumb>
+                  </Track.Thumb>
+                </Track>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="CheckBox">
+      <Setter Property="Margin" Value="0,8,0,0"/>
+      <Setter Property="Foreground" Value="#334155"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="Btn" TargetType="Button">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="BorderBrush" Value="#D8DEE8"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="14,8"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="9" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bd" Property="Opacity" Value="0.88"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Bd" Property="Opacity" Value="0.72"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Bd" Property="Opacity" Value="0.42"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource Btn}">
+      <Setter Property="Background">
+        <Setter.Value>
+          <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#6366F1" Offset="0"/>
+            <GradientStop Color="#4F46E5" Offset="1"/>
+          </LinearGradientBrush>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style x:Key="SuccessBtn" TargetType="Button" BasedOn="{StaticResource Btn}">
+      <Setter Property="Background" Value="#059669"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style x:Key="DangerBtn" TargetType="Button" BasedOn="{StaticResource Btn}">
+      <Setter Property="Background" Value="#FEE2E2"/>
+      <Setter Property="Foreground" Value="#B91C1C"/>
+      <Setter Property="BorderBrush" Value="#FECACA"/>
+    </Style>
+    <Style x:Key="SmallBtn" TargetType="Button" BasedOn="{StaticResource Btn}">
+      <Setter Property="Padding" Value="10,5"/>
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+
+    <Style x:Key="Pill" TargetType="RadioButton">
+      <Setter Property="Margin" Value="0,0,8,8"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Foreground" Value="#334155"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="RadioButton">
+            <Border x:Name="Bd" Background="#F1F5F9" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="17" Padding="16,7">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#A5B4FC"/>
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="Bd" Property="Background" Value="#4F46E5"/>
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#4F46E5"/>
+                <Setter Property="Foreground" Value="White"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="Chip" TargetType="Border">
+      <Setter Property="Background" Value="#26FFFFFF"/>
+      <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="15"/>
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="Margin" Value="8,0,0,0"/>
+    </Style>
+
+    <Style TargetType="TabItem">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TabItem">
+            <Border x:Name="Bd" BorderThickness="0,0,0,2" BorderBrush="Transparent" Padding="4,6" Margin="0,0,18,0">
+              <ContentPresenter x:Name="Cp" ContentSource="Header" TextBlock.FontWeight="SemiBold" TextBlock.Foreground="#64748B"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Bd" Property="BorderBrush" Value="#4F46E5"/>
+                <Setter TargetName="Cp" Property="TextBlock.Foreground" Value="#4F46E5"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="TabControl">
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="0,10,0,0"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style x:Key="Code" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+      <Setter Property="FontFamily" Value="{StaticResource Mono}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="IsReadOnly" Value="True"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="VerticalContentAlignment" Value="Top"/>
+      <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+      <Setter Property="Background" Value="#0F172A"/>
+      <Setter Property="Foreground" Value="#E2E8F0"/>
+      <Setter Property="BorderBrush" Value="#1E293B"/>
+      <Setter Property="Padding" Value="12,10"/>
+    </Style>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="6"/>
+      <RowDefinition Height="200" MinHeight="110"/>
+    </Grid.RowDefinitions>
+
+    <!-- ===================== HEADER ===================== -->
+    <Border Grid.Row="0" Padding="24,14">
+      <Border.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+          <GradientStop Color="#1E1B4B" Offset="0"/>
+          <GradientStop Color="#312E81" Offset="0.55"/>
+          <GradientStop Color="#4338CA" Offset="1"/>
+        </LinearGradientBrush>
+      </Border.Background>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Width="42" Height="42" CornerRadius="12" VerticalAlignment="Center">
+          <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+              <GradientStop Color="#818CF8" Offset="0"/>
+              <GradientStop Color="#22D3EE" Offset="1"/>
+            </LinearGradientBrush>
+          </Border.Background>
+          <Viewbox Width="24" Height="24">
+            <Canvas Width="24" Height="24">
+              <Path Stroke="White" StrokeThickness="2.2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M2,9 C8,3 16,3 22,9"/>
+              <Path Stroke="White" StrokeThickness="2.2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M5.5,12.5 C9.5,8.6 14.5,8.6 18.5,12.5"/>
+              <Path Stroke="White" StrokeThickness="2.2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M9,16 C11,14.2 13,14.2 15,16"/>
+              <Ellipse Canvas.Left="10.4" Canvas.Top="18.2" Width="3.2" Height="3.2" Fill="White"/>
+            </Canvas>
+          </Viewbox>
+        </Border>
+        <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Wireless ECR Simulator" FontSize="20" FontWeight="SemiBold" Foreground="White"/>
+            <Border x:Name="ProdBadge" Background="#DC2626" CornerRadius="6" Padding="8,2" Margin="12,0,0,0" VerticalAlignment="Center" Visibility="Collapsed">
+              <TextBlock Text="PRODUCTION" FontSize="11" FontWeight="Bold" Foreground="White"/>
+            </Border>
+          </StackPanel>
+          <TextBlock x:Name="SubtitleText" Text="Merchant register + virtual POS terminal for the areeba integration server" FontSize="12" Foreground="#C7D2FE" Margin="0,2,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+          <Border Style="{StaticResource Chip}">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse x:Name="TokenDot" Width="9" Height="9" Fill="#94A3B8" VerticalAlignment="Center"/>
+              <TextBlock x:Name="TokenChip" Text="Token" Foreground="White" Margin="8,0,0,0" FontSize="12"/>
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource Chip}">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse x:Name="TermDot" Width="9" Height="9" Fill="#94A3B8" VerticalAlignment="Center"/>
+              <TextBlock x:Name="TermChip" Text="Terminal offline" Foreground="White" Margin="8,0,0,0" FontSize="12"/>
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource Chip}">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse x:Name="MockDot" Width="9" Height="9" Fill="#94A3B8" VerticalAlignment="Center"/>
+              <TextBlock x:Name="MockChip" Text="Tap Start mock off" Foreground="White" Margin="8,0,0,0" FontSize="12"/>
+            </StackPanel>
+          </Border>
+          <Button x:Name="AboutBtn" Content="About" Style="{StaticResource SmallBtn}" Margin="12,0,0,0" Background="#26FFFFFF" Foreground="White" BorderBrush="#33FFFFFF"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- ===================== MAIN ===================== -->
+    <Grid Grid.Row="1" Margin="18,16,18,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="320"/>
+        <ColumnDefinition Width="16"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="16"/>
+        <ColumnDefinition Width="390"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- ===== LEFT: environment ===== -->
+      <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="Environment" Style="{StaticResource CardTitle}"/>
+              <TextBlock Text="Integration server, terminal credentials and API token" Style="{StaticResource CardSub}"/>
+              <ComboBox x:Name="EnvCombo" FontWeight="SemiBold"/>
+              <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="NewEnvBtn" Content="+ New" Style="{StaticResource SmallBtn}" Margin="0,0,6,0" ToolTip="New environment, copied from the selected one"/>
+                <Button x:Name="RenameEnvBtn" Grid.Column="1" Content="Rename" Style="{StaticResource SmallBtn}" Margin="0,0,6,0"/>
+                <Button x:Name="DeleteEnvBtn" Grid.Column="2" Content="Delete" Style="{StaticResource SmallBtn}" Foreground="#B91C1C"/>
+                <CheckBox x:Name="ProdCheck" Grid.Column="3" Content="PROD" HorizontalAlignment="Right" Margin="0" ToolTip="Real money: shows the red badge and confirms every send"/>
+              </Grid>
+              <Border x:Name="ProdBanner" Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,10,0,0" Visibility="Collapsed">
+                <TextBlock TextWrapping="Wrap" Foreground="#B91C1C" FontSize="12" FontWeight="SemiBold"
+                           Text="Production: a real terminal and real money. Every send asks for confirmation."/>
+              </Border>
+              <TextBlock Text="SERVER (REST)" Style="{StaticResource Label}"/>
+              <TextBox x:Name="ServerBox"/>
+              <TextBlock Text="WEBSOCKET URL" Style="{StaticResource Label}"/>
+              <TextBox x:Name="WsBox"/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="10"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="TERMINAL ID" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="TerminalBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="TERMINAL PASSWORD" Style="{StaticResource Label}"/>
+                  <PasswordBox x:Name="PassBox"/>
+                </StackPanel>
+              </Grid>
+              <TextBlock Text="CLIENT SECRET (clientIdSecretKey)" Style="{StaticResource Label}"/>
+              <PasswordBox x:Name="SecretBox"/>
+              <TextBlock Text="ACCESS TOKEN" Style="{StaticResource Label}"/>
+              <TextBox x:Name="TokenBox" Height="66" TextWrapping="Wrap" VerticalContentAlignment="Top" FontFamily="{StaticResource Mono}" FontSize="10.5" VerticalScrollBarVisibility="Auto"/>
+              <TextBlock x:Name="TokenInfo" Style="{StaticResource Hint}" Text=""/>
+              <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="8"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="GetTokenBtn" Content="Get application token" Style="{StaticResource PrimaryBtn}"/>
+                <Button x:Name="SaveBtn" Grid.Column="2" Content="Save" Style="{StaticResource Btn}"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="How it fits together" Style="{StaticResource CardTitle}"/>
+              <TextBlock Style="{StaticResource CardSub}" Margin="0,6,0,0">
+                <Run FontWeight="SemiBold" Foreground="#334155">1.</Run> Get a token (merchant side).<LineBreak/>
+                <Run FontWeight="SemiBold" Foreground="#334155">2.</Run> Log a terminal in: a real POS with wireless ECR, or the virtual terminal on the right.<LineBreak/>
+                <Run FontWeight="SemiBold" Foreground="#334155">3.</Run> Send a transaction. The server pushes it to the terminal and waits up to waitingTime for its TRXResult.<LineBreak/>
+                <Run FontWeight="SemiBold" Foreground="#334155">4.</Run> Code 1 = sent but no answer in time: check it with trx-info / pos-trx-info.
+              </TextBlock>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- ===== CENTER: transaction + result ===== -->
+      <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <Grid>
+                <TextBlock Text="New transaction" Style="{StaticResource CardTitle}"/>
+                <TextBlock Text="POST /integration/transaction" HorizontalAlignment="Right" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="#94A3B8" VerticalAlignment="Center"/>
+              </Grid>
+              <TextBlock x:Name="TypeHint" Style="{StaticResource CardSub}" Text=""/>
+              <WrapPanel>
+                <RadioButton x:Name="TypeSale" GroupName="trxType" Content="Sale" Style="{StaticResource Pill}" IsChecked="True"/>
+                <RadioButton x:Name="TypePreauth" GroupName="trxType" Content="Pre-auth" Style="{StaticResource Pill}"/>
+                <RadioButton x:Name="TypeIncremental" GroupName="trxType" Content="Incremental" Style="{StaticResource Pill}"/>
+                <RadioButton x:Name="TypeCompletion" GroupName="trxType" Content="Completion" Style="{StaticResource Pill}"/>
+                <RadioButton x:Name="TypeVoid" GroupName="trxType" Content="Void" Style="{StaticResource Pill}"/>
+                <RadioButton x:Name="TypeSettle" GroupName="trxType" Content="Settlement" Style="{StaticResource Pill}"/>
+              </WrapPanel>
+
+              <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="1.4*"/>
+                  <ColumnDefinition Width="14"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="14"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="AmountPanel">
+                  <TextBlock Text="AMOUNT (MINOR UNITS)" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="AmountBox" FontSize="22" FontWeight="SemiBold" FontFamily="{StaticResource Mono}" Padding="10,6"/>
+                  <TextBlock x:Name="AmountHint" Style="{StaticResource Hint}" Text="Sent exactly as typed. 100 = 1.00 USD"/>
+                </StackPanel>
+                <StackPanel x:Name="CurrencyPanel" Grid.Column="2">
+                  <TextBlock Text="CURRENCY" Style="{StaticResource Label}"/>
+                  <ComboBox x:Name="CurrencyCombo" IsEditable="True" Height="42" FontSize="15" FontWeight="SemiBold"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                  <TextBlock Text="ECR REFERENCE" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="RefBox" FontSize="15" FontFamily="{StaticResource Mono}" Height="42"/>
+                  <CheckBox x:Name="AutoRefCheck" Content="+1 after each send"/>
+                </StackPanel>
+              </Grid>
+
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="14"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="14"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="StanPanel">
+                  <TextBlock Text="STAN (VOID)" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="StanBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <StackPanel x:Name="TipsPanel" Grid.Column="2">
+                  <TextBlock Text="TIPS" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="TipsBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                  <TextBlock Text="WAITING TIME (S)" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="WaitBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+              </Grid>
+
+              <Expander x:Name="RetryExpander" Margin="0,14,0,0" Foreground="#334155">
+                <Expander.Header>
+                  <TextBlock Text="Boonz retry: ask again for less on insufficient funds" FontWeight="SemiBold" Foreground="#334155"/>
+                </Expander.Header>
+                <StackPanel Margin="22,4,0,0">
+                  <CheckBox x:Name="RetryCheck" Content="Retry pre-auth / incremental while the reply has this code"/>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="12"/>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="12"/>
+                      <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="RETRY ON CODE" Style="{StaticResource Label}"/>
+                      <TextBox x:Name="RetryCodeBox" FontFamily="{StaticResource Mono}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="LOWER BY" Style="{StaticResource Label}"/>
+                      <TextBox x:Name="RetryStepBox" FontFamily="{StaticResource Mono}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4">
+                      <TextBlock Text="NEVER BELOW" Style="{StaticResource Label}"/>
+                      <TextBox x:Name="RetryMinBox" FontFamily="{StaticResource Mono}"/>
+                    </StackPanel>
+                  </Grid>
+                  <TextBlock Style="{StaticResource Hint}" Text="Needs TMS ecr.mirrorResponseCode on the terminal; otherwise every decline comes back as -1."/>
+                </StackPanel>
+              </Expander>
+
+              <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="SendBtn" Style="{StaticResource PrimaryBtn}" Padding="18,12" FontSize="15">
+                  <TextBlock x:Name="SendBtnText" Text="Send sale"/>
+                </Button>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10,0,0,0">
+                  <Button x:Name="TrxInfoBtn" Content="Check on host" Style="{StaticResource Btn}" Margin="0,0,8,0" ToolTip="GET /integration/trx-info (ISO microservice)"/>
+                  <Button x:Name="PosTrxInfoBtn" Content="Check on POS" Style="{StaticResource Btn}" Margin="0,0,8,0" ToolTip="GET /integration/pos-trx-info (POS microservice)"/>
+                  <Button x:Name="CurlBtn" Content="Copy cURL" Style="{StaticResource Btn}"/>
+                </StackPanel>
+              </Grid>
+              <Grid x:Name="WaitPanel" Margin="0,12,0,0" Visibility="Collapsed">
+                <ProgressBar IsIndeterminate="True" Height="4" Foreground="#6366F1" Background="#E0E7FF" BorderThickness="0" VerticalAlignment="Top"/>
+                <TextBlock x:Name="WaitText" Margin="0,10,0,0" Foreground="#4F46E5" FontWeight="SemiBold" Text="Waiting for the terminal..."/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border x:Name="ResultBadge" Width="54" Height="54" CornerRadius="27" Background="#F1F5F9" VerticalAlignment="Top">
+                  <TextBlock x:Name="ResultBadgeText" Text="?" FontSize="24" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                  <TextBlock x:Name="ResultTitle" Text="No transaction yet" FontSize="19" FontWeight="SemiBold"/>
+                  <TextBlock x:Name="ResultDesc" Text="Send a transaction to see the server reply here." Foreground="#475569" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                  <TextBlock x:Name="ResultExplain" Text="" Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                </StackPanel>
+              </Grid>
+              <UniformGrid Columns="6" Margin="0,16,0,0">
+                <StackPanel><TextBlock Text="CODE" Style="{StaticResource Label}" Margin="0,0,0,3"/><TextBlock x:Name="FactCode" Text="-" FontFamily="{StaticResource Mono}" FontWeight="SemiBold"/></StackPanel>
+                <StackPanel><TextBlock Text="ECR REF" Style="{StaticResource Label}" Margin="0,0,0,3"/><TextBlock x:Name="FactRef" Text="-" FontFamily="{StaticResource Mono}" FontWeight="SemiBold"/></StackPanel>
+                <StackPanel><TextBlock Text="STAN" Style="{StaticResource Label}" Margin="0,0,0,3"/><TextBlock x:Name="FactStan" Text="-" FontFamily="{StaticResource Mono}" FontWeight="SemiBold"/></StackPanel>
+                <StackPanel><TextBlock Text="BATCH" Style="{StaticResource Label}" Margin="0,0,0,3"/><TextBlock x:Name="FactBatch" Text="-" FontFamily="{StaticResource Mono}" FontWeight="SemiBold"/></StackPanel>
+                <StackPanel><TextBlock Text="HTTP" Style="{StaticResource Label}" Margin="0,0,0,3"/><TextBlock x:Name="FactHttp" Text="-" FontFamily="{StaticResource Mono}" FontWeight="SemiBold"/></StackPanel>
+                <StackPanel><TextBlock Text="TIME" Style="{StaticResource Label}" Margin="0,0,0,3"/><TextBlock x:Name="FactTime" Text="-" FontFamily="{StaticResource Mono}" FontWeight="SemiBold"/></StackPanel>
+              </UniformGrid>
+              <TabControl Margin="0,12,0,0">
+                <TabItem Header="Response">
+                  <TextBox x:Name="ResponseBox" Style="{StaticResource Code}" Height="190"/>
+                </TabItem>
+                <TabItem Header="Request">
+                  <TextBox x:Name="RequestBox" Style="{StaticResource Code}" Height="190"/>
+                </TabItem>
+              </TabControl>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- ===== RIGHT: virtual terminal + door ===== -->
+      <ScrollViewer Grid.Column="4" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="Virtual terminal" Style="{StaticResource CardTitle}"/>
+              <TextBlock Text="Plays the POS on the WebSocket, so you can test without a device. Use a test terminal id: logging in takes over that terminal's session." Style="{StaticResource CardSub}"/>
+              <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="12,10">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                  </Grid.ColumnDefinitions>
+                  <Ellipse x:Name="TermStateDot" Width="12" Height="12" Fill="#CBD5E1" VerticalAlignment="Center"/>
+                  <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="TermStateText" Text="Offline" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="TermStateSub" Text="Not connected" FontSize="11.5" Foreground="#64748B"/>
+                  </StackPanel>
+                  <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="DropBtn" Content="Drop link" Style="{StaticResource SmallBtn}" Margin="0,0,6,0" ToolTip="Kill the socket without a close frame, like a terminal losing Wi-Fi"/>
+                    <Button x:Name="ConnectBtn" Content="Connect" Style="{StaticResource SuccessBtn}" Padding="14,6"/>
+                  </StackPanel>
+                </Grid>
+              </Border>
+              <CheckBox x:Name="ModernCheck" Content="New POS protocol (heartbeat + confirmations)" Margin="0,12,0,0"/>
+              <CheckBox x:Name="AutoReconnectCheck" Content="Reconnect automatically (1 to 30 s back-off)"/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="10"/>
+                  <ColumnDefinition Width="90"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="WHEN A TRANSACTION ARRIVES" Style="{StaticResource Label}"/>
+                  <ComboBox x:Name="ModeCombo"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="COUNTRY" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="CountryBox" ToolTip="Optional, sent at Login (LB, JO, IQ). Empty = old POS behaviour"/>
+                </StackPanel>
+              </Grid>
+              <Grid x:Name="DeclineRow">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="110"/>
+                  <ColumnDefinition Width="10"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="DECLINE CODE" Style="{StaticResource Label}"/>
+                  <ComboBox x:Name="DeclineCodeCombo" IsEditable="True" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="DECLINE TEXT" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="DeclineDescBox"/>
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="110"/>
+                  <ColumnDefinition Width="10"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="ANSWER AFTER (S)" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="DelayBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <CheckBox x:Name="DuplicateCheck" Grid.Column="2" Content="Send every result twice" VerticalAlignment="Bottom" Margin="0,0,0,8"/>
+              </Grid>
+
+              <TextBlock Text="WAITING FOR YOU" Style="{StaticResource Section}"/>
+              <TextBlock x:Name="PendingEmpty" Text="Nothing waiting. In &quot;Ask me&quot; mode transactions show up here." Style="{StaticResource Hint}"/>
+              <ItemsControl x:Name="PendingList">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Background="#EEF2FF" BorderBrush="#C7D2FE" BorderThickness="1" CornerRadius="10" Padding="12,10" Margin="0,8,0,0">
+                      <StackPanel>
+                        <Grid>
+                          <TextBlock Text="{Binding Summary}" FontWeight="SemiBold" FontFamily="Cascadia Mono, Consolas" FontSize="12.5"/>
+                          <TextBlock Text="{Binding Received}" HorizontalAlignment="Right" Foreground="#6366F1" FontSize="11.5"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                          <Button Content="Approve" Tag="{Binding RequestId}" Style="{StaticResource SuccessBtn}" Padding="12,5" FontSize="12" Margin="0,0,6,0"/>
+                          <Button Content="Decline" Tag="{Binding RequestId}" Style="{StaticResource DangerBtn}" Padding="12,5" FontSize="12" Margin="0,0,6,0"/>
+                          <Button Content="Busy" Tag="{Binding RequestId}" Style="{StaticResource SmallBtn}" Margin="0,0,6,0"/>
+                          <Button Content="Ignore" Tag="{Binding RequestId}" Style="{StaticResource SmallBtn}"/>
+                        </StackPanel>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="Fridge door (Boonz)" Style="{StaticResource CardTitle}"/>
+              <TextBlock Text="Open the door, then the merchant sends a pre-auth to the terminal." Style="{StaticResource CardSub}"/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="80"/>
+                  <ColumnDefinition Width="10"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="LOCK" Style="{StaticResource Label}" Margin="0,0,0,5"/>
+                  <TextBox x:Name="LockBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="ECR REF (OPTIONAL)" Style="{StaticResource Label}" Margin="0,0,0,5"/>
+                  <TextBox x:Name="DoorRefBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+              </Grid>
+              <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="8"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="OpenDoorApiBtn" Content="Open door (API)" Style="{StaticResource PrimaryBtn}" ToolTip="POST /integration/door/open"/>
+                <Button x:Name="OpenDoorWsBtn" Grid.Column="2" Content="Press START" Style="{StaticResource Btn}" ToolTip="The virtual terminal sends OpenDoor over the WebSocket, like the POS START button"/>
+              </Grid>
+
+              <Border Background="#ECFDF5" BorderBrush="#A7F3D0" BorderThickness="1" CornerRadius="10" Padding="12,4,12,12" Margin="0,14,0,0">
+                <StackPanel>
+                  <CheckBox x:Name="BoonzCheck" FontWeight="SemiBold" Foreground="#065F46">
+                    <TextBlock TextWrapping="Wrap" Text="No door access: act as Boonz and send a pre-auth when the door opens"/>
+                  </CheckBox>
+                  <CheckBox x:Name="PretendCheck" Foreground="#065F46">
+                    <TextBlock TextWrapping="Wrap" Text="Pretend the door opened (do not call the door API)"/>
+                  </CheckBox>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="10"/>
+                      <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="PRE-AUTH AMOUNT" Style="{StaticResource Label}"/>
+                      <TextBox x:Name="PreauthAmountBox" FontFamily="{StaticResource Mono}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="SEND AFTER (S)" Style="{StaticResource Label}"/>
+                      <TextBox x:Name="PreauthDelayBox" FontFamily="{StaticResource Mono}"/>
+                    </StackPanel>
+                  </Grid>
+                  <TextBlock Style="{StaticResource Hint}" Foreground="#047857" Text="Uses the currency, ECR reference and waiting time from the transaction card. Triggered by a successful door call, by Press START, or by the server calling the mock Tap Start below."/>
+                </StackPanel>
+              </Border>
+
+              <TextBlock Text="MOCK TAP START (MERCHANT API)" Style="{StaticResource Section}"/>
+              <TextBlock Style="{StaticResource Hint}" Text="For a local server: it calls this instead of weimi24 when the POS presses START."/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="80"/>
+                  <ColumnDefinition Width="10"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="PORT" Style="{StaticResource Label}"/>
+                  <TextBox x:Name="MockPortBox" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="ANSWER WITH" Style="{StaticResource Label}"/>
+                  <ComboBox x:Name="MockReplyCombo"/>
+                </StackPanel>
+              </Grid>
+              <TextBlock Text="SECRET (OPTIONAL, CHECKS X-SIGNATURE)" Style="{StaticResource Label}"/>
+              <PasswordBox x:Name="MockSecretBox"/>
+              <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="8"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="MockConfigBox" IsReadOnly="True" FontFamily="{StaticResource Mono}" FontSize="11" TextWrapping="Wrap"/>
+                <Button x:Name="MockToggleBtn" Grid.Column="2" Content="Start" Style="{StaticResource SuccessBtn}"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+
+    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" Background="Transparent" Cursor="SizeNS"/>
+
+    <!-- ===================== BOTTOM: activity ===================== -->
+    <Border Grid.Row="3" Style="{StaticResource Card}" Margin="18,0,18,14" Padding="18,8,18,12">
+      <Grid>
+        <TabControl x:Name="BottomTabs">
+          <TabItem Header="Activity">
+            <ListBox x:Name="LogList" BorderThickness="0" Background="Transparent" FontFamily="{StaticResource Mono}" FontSize="12"
+                     VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                  <Setter Property="Padding" Value="2,2"/>
+                  <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+              </ListBox.ItemContainerStyle>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="92"/>
+                      <ColumnDefinition Width="58"/>
+                      <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Time}" Foreground="#94A3B8"/>
+                    <Border Grid.Column="1" Background="{Binding TagBack}" CornerRadius="4" Padding="4,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                      <TextBlock Text="{Binding Tag}" Foreground="{Binding TagFore}" FontWeight="Bold" FontSize="10.5"/>
+                    </Border>
+                    <TextBlock Grid.Column="2" Text="{Binding Text}" TextWrapping="Wrap" Foreground="#1E293B"/>
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </TabItem>
+          <TabItem Header="Transactions">
+            <ListView x:Name="HistoryList" BorderThickness="0" FontSize="12.5">
+              <ListView.View>
+                <GridView>
+                  <GridViewColumn Header="Time" Width="80" DisplayMemberBinding="{Binding Time}"/>
+                  <GridViewColumn Header="Type" Width="110" DisplayMemberBinding="{Binding Type}"/>
+                  <GridViewColumn Header="ECR ref" Width="90" DisplayMemberBinding="{Binding Ref}"/>
+                  <GridViewColumn Header="Amount" Width="110" DisplayMemberBinding="{Binding Amount}"/>
+                  <GridViewColumn Header="Code" Width="60" DisplayMemberBinding="{Binding Code}"/>
+                  <GridViewColumn Header="Description" Width="330" DisplayMemberBinding="{Binding Desc}"/>
+                  <GridViewColumn Header="STAN" Width="80" DisplayMemberBinding="{Binding Stan}"/>
+                  <GridViewColumn Header="ms" Width="70" DisplayMemberBinding="{Binding Ms}"/>
+                </GridView>
+              </ListView.View>
+            </ListView>
+          </TabItem>
+        </TabControl>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+          <Button x:Name="CopyLogBtn" Content="Copy" Style="{StaticResource SmallBtn}" Margin="0,0,6,0"/>
+          <Button x:Name="OpenLogsBtn" Content="Log folder" Style="{StaticResource SmallBtn}" Margin="0,0,6,0"/>
+          <Button x:Name="ClearLogBtn" Content="Clear" Style="{StaticResource SmallBtn}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>
