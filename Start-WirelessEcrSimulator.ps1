@@ -1,7 +1,7 @@
 # Starts the Wireless ECR Simulator without an .exe: compiles src\*.cs in memory and opens the window,
 # the same way as the ECR Simulator (Start-EcrSimulator.ps1). Wireless ECR Simulator - by Ahmad El Lahib
 # Usage: powershell -STA -ExecutionPolicy Bypass -File Start-WirelessEcrSimulator.ps1 [-Snapshot file.png]
-param([string]$Snapshot)
+param([string]$Snapshot, [switch]$Demo)
 
 $ErrorActionPreference = 'Stop'
 $dir = $PSScriptRoot
@@ -29,6 +29,7 @@ if ($errors.Count -gt 0) {
 }
 
 $argList = @()
-if ($Snapshot) { $argList = @('--snapshot', $Snapshot) }
+if ($Snapshot) { $argList += @('--snapshot', $Snapshot) }
+if ($Demo) { $argList += '--demo' }
 $program = $result.CompiledAssembly.GetType('WirelessEcrSim.Program')
 [void]$program.GetMethod('Run').Invoke($null, @(($dir + '\'), [string[]]$argList))

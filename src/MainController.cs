@@ -1147,6 +1147,23 @@ namespace WirelessEcrSim
             MessageBox.Show(Window, text, "Wireless ECR Simulator", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        /// <summary>--demo: fills the result card with a sample approved sale (screenshots and visual checks).</summary>
+        public void ShowDemoResult()
+        {
+            ApiResult r = new ApiResult();
+            r.Method = "POST";
+            r.Url = "https://socket-mpos.areeba.com:5002/integration/transaction";
+            r.RequestBody = "{\"terminalId\":\"LB000046\",\"pass\":\"x\",\"transactionType\":\"SALE\",\"amount\":\"1000\",\"currency\":\"USD\",\"tips\":\"\",\"ecrRefNo\":\"1004\",\"waitingTime\":60000}";
+            r.HttpStatus = 200;
+            r.ElapsedMs = 8421;
+            r.ResponseBody = "{\"terminalId\":\"LB000046\",\"responseCode\":\"0\",\"responseDesc\":\"Successfully processed\",\"ecrRefNo\":\"1004\",\"systemTraceNumber\":\"4512\",\"batchNumber\":\"1\",\"result\":{\"responseCode\":\"0000\",\"responseMessage\":\"Approved\",\"amount\":\"1000\",\"currency\":\"USD\",\"rrn\":\"531209004512\",\"authCode\":\"482913\",\"maskedPan\":\"476173******0119\",\"cardType\":\"VISA\"}}";
+            r.Json = Json.TryParseObject(r.ResponseBody);
+            RequestBox.Text = "";
+            ShowResult(r, "sale", Outcome.Approved, null, null);
+            ScrollViewer center = Window.FindName("CenterScroll") as ScrollViewer;
+            if (center != null) center.ScrollToEnd();
+        }
+
         private void ShowAbout()
         {
             MessageBox.Show(Window,

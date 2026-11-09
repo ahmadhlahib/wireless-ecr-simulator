@@ -388,17 +388,27 @@
       <Setter Property="Background" Value="Transparent"/>
     </Style>
 
-    <Style x:Key="Code" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+    <!-- JSON viewer: own template, so the read-only style of normal text boxes never makes it light -->
+    <Style x:Key="Code" TargetType="TextBox">
       <Setter Property="FontFamily" Value="{StaticResource Mono}"/>
-      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontSize" Value="12.5"/>
       <Setter Property="IsReadOnly" Value="True"/>
       <Setter Property="TextWrapping" Value="Wrap"/>
-      <Setter Property="VerticalContentAlignment" Value="Top"/>
       <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
       <Setter Property="Background" Value="#0F172A"/>
       <Setter Property="Foreground" Value="#E2E8F0"/>
-      <Setter Property="BorderBrush" Value="#1E293B"/>
-      <Setter Property="Padding" Value="12,10"/>
+      <Setter Property="CaretBrush" Value="#E2E8F0"/>
+      <Setter Property="SelectionBrush" Value="#6366F1"/>
+      <Setter Property="Padding" Value="14,12"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TextBox">
+            <Border Background="{TemplateBinding Background}" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="10" Padding="{TemplateBinding Padding}">
+              <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Stretch"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
     </Style>
   </Window.Resources>
 
@@ -559,7 +569,7 @@
       </ScrollViewer>
 
       <!-- ===== CENTER: transaction + result ===== -->
-      <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+      <ScrollViewer x:Name="CenterScroll" Grid.Column="2" VerticalScrollBarVisibility="Auto">
         <StackPanel>
           <Border Style="{StaticResource Card}">
             <StackPanel>
@@ -701,10 +711,10 @@
               </UniformGrid>
               <TabControl Margin="0,12,0,0">
                 <TabItem Header="Response">
-                  <TextBox x:Name="ResponseBox" Style="{StaticResource Code}" Height="190"/>
+                  <TextBox x:Name="ResponseBox" Style="{StaticResource Code}" Height="280"/>
                 </TabItem>
                 <TabItem Header="Request">
-                  <TextBox x:Name="RequestBox" Style="{StaticResource Code}" Height="190"/>
+                  <TextBox x:Name="RequestBox" Style="{StaticResource Code}" Height="280"/>
                 </TabItem>
               </TabControl>
             </StackPanel>

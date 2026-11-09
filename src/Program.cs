@@ -49,6 +49,7 @@ namespace WirelessEcrSim
             }
 
             // --snapshot file.png renders the window to an image and exits (for docs and checks)
+            if (Array.IndexOf(args, "--demo") >= 0) controller.ShowDemoResult();
             int snap = Array.IndexOf(args, "--snapshot");
             if (snap >= 0 && snap + 1 < args.Length)
             {
